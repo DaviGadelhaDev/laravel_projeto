@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\CourseController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ClasseController;
+use App\Http\Controllers\CourseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,8 +24,11 @@ Route::controller(CourseController::class)->group(function (){
     Route::get('/index-course', 'index')->name('course.index');
     Route::get('/create-course', 'create')->name('course.create');
     Route::post('/store-course', 'store')->name('course.store');
-    Route::get('/show-course', 'show')->name('course.show');
-    Route::get('/edit-course', 'edit')->name('course.edit');
-    Route::put('/update-course', 'update')->name('course.update');
-    Route::delete('/destroy-course', 'destroy')->name('course.destroy');
+    Route::get('/show-course/{course}', 'show')->name('course.show');
+    Route::get('/edit-course/{course}', 'edit')->name('course.edit');
+    Route::put('/update-course/{course}', 'update')->name('course.update');
+    Route::delete('/destroy-course/{course}', 'destroy')->name('course.destroy');
 });
+
+//Aulas 
+Route::get('/index-classe/{course}', [ClasseController::class, 'index'])->name('classe.index');

@@ -30,7 +30,8 @@ class CourseController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required'
+            'name' => 'required',
+            'price' => 'required'
         ]);
 
         Course::create($request->all());
@@ -40,32 +41,34 @@ class CourseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Course $course)
     {
-        return view('courses.show');
+        return view('courses.show', ['course' => $course]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Course $course)
     {
-        return view('courses.edit');
+        return view('courses.edit', ['course' => $course]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Course $course)
     {
-        //
+        $course->update(['name'=>$request->name, 'price'=>$request->price]);
+        return redirect()->route('course.index')->with('success', 'Course edited successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Course $course)
     {
-        //
+        $course->delete();
+        return redirect()->route('course.index')->with('success', 'Course deleted successfully');
     }
 }
