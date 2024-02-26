@@ -33,5 +33,6 @@ Route::controller(CourseController::class)->group(function (){
 //Classes 
 Route::controller(ClasseController::class)->group(function (){
     Route::get('/index-classe/{course}', 'index')->name('classe.index');
+    Route::get('/create-classe/{course}', 'create')->name('classe.create');
     Route::get('/show-classe/{classe}', 'show')->name('classe.show');   
 });
