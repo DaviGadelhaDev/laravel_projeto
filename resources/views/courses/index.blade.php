@@ -9,16 +9,18 @@
         {{ session('success') }}
     </p>
     @endif
+    <a href="{{ route('course.create') }}">Cadastrar</a>
+    @forelse ($courses as $course)
     <table>
         <thead>
             <tr>
                 <th>ID: </th>
                 <th>Name: </th>
+                <th>Price: </th>
                 <th>Created_at: </th>
                 <th>Updated_at: </th>
             </tr>
         </thead>
-        @forelse ($courses as $course)
                 <tbody>
                     <tr>
                         <td>{{ $course->id }}</td>

@@ -30,5 +30,8 @@ Route::controller(CourseController::class)->group(function (){
     Route::delete('/destroy-course/{course}', 'destroy')->name('course.destroy');
 });
 
-//Aulas 
-Route::get('/index-classe/{course}', [ClasseController::class, 'index'])->name('classe.index');
+//Classes 
+Route::controller(ClasseController::class)->group(function (){
+    Route::get('/index-classe/{course}', 'index')->name('classe.index');
+    Route::get('/show-classe/{classe}', 'show')->name('classe.show');   
+});

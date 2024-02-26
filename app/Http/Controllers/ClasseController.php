@@ -13,4 +13,8 @@ class ClasseController extends Controller
         $classes = Classe::with('course')->where('course_id', $course->id)->orderBy('order_classe')->get();
         return view('classes.index', ['classes' => $classes]);
     }
+
+    public function show(Classe $classe){
+        return view('classes.show', ['classe' => $classe]);
+    }
 }

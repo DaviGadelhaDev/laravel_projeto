@@ -3,6 +3,7 @@
         <tr>
             <th>ID: </th>
             <th>Name: </th>
+            <th>Price: </th>
             <th>Created_at: </th>
             <th>Updated_at: </th>
         </tr>
@@ -11,6 +12,7 @@
                 <tr>
                     <td>{{ $course->id }}</td>
                     <td>{{ $course->name }}</td>
+                    <td>{{ 'R$'. number_format($course->price, 2, ',', '.' )}}</td>
                     <td>{{ \Carbon\Carbon::parse($course->created_at)->tz('America/Sao_Paulo')->format('d/m/Y H:i:s') }}</td>
                     <td>{{ \Carbon\Carbon::parse($course->updated_at)->tz('America/Sao_Paulo')->format('d/m/Y H:i:s') }}</td>
                     <td><a href="{{ route('course.index') }}">Voltar</a></td>

@@ -9,9 +9,9 @@ class Classe extends Model
 {
     use HasFactory;
     protected $table = 'classes';
-    protected $fillable = ['name', 'description', 'course_id'];
+    protected $fillable = ['name', 'description', 'order_classe', 'course_id'];
 
     public function course(){
-        return $this->belongsTo(Course::class);
+        return $this->belongsTo(Course::class, 'course_id');
     }
 }
