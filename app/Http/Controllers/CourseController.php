@@ -31,7 +31,7 @@ class CourseController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'price' => 'required'
+            'price' => 'required|numeric'
         ]);
 
         Course::create($request->all());

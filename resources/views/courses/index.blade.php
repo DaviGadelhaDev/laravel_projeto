@@ -3,12 +3,20 @@
     @if (session('success'))
         <span>{{ session('success') }}</span>
     @endif
+
     <h2>Listagem</h2>
     @if (session('success'))
     <p style="color: green;">
         {{ session('success') }}
     </p>
+
     @endif
+    @if (session('error'))
+    <p style="color: red;">
+        {{ session('error') }}
+    </p>
+    @endif
+
     <a href="{{ route('course.create') }}">Cadastrar</a>
     @forelse ($courses as $course)
     <table>

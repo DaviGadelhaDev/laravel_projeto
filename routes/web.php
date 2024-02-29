@@ -34,5 +34,9 @@ Route::controller(CourseController::class)->group(function (){
 Route::controller(ClasseController::class)->group(function (){
     Route::get('/index-classe/{course}', 'index')->name('classe.index');
     Route::get('/create-classe/{course}', 'create')->name('classe.create');
+    Route::post('/store-classe', 'store')->name('classe.store');
     Route::get('/show-classe/{classe}', 'show')->name('classe.show');   
+    Route::get('/edit-classe/{classe}', 'edit')->name('classe.edit');
+    Route::put('/update-classe/{classe}', 'update')->name('classe.update');
+    Route::delete('/destroy-classe/{classe}', 'destroy')->name('classe.destroy');
 });

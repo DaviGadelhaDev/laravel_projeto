@@ -9,6 +9,8 @@
             {{ session('success') }}
         </p>
     @endif
+    <a href="{{ route('classe.create', ['course' => $course->id]) }}">Cadastrar</a>
+    
     @forelse ($classes as $classe)
     <table>
         <thead>
@@ -28,6 +30,14 @@
                         <td>{{ \Carbon\Carbon::parse($classe->created_at)->tz('America/Sao_Paulo')->format('d/m/Y H:i:s') }}</td>
                         <td>{{ \Carbon\Carbon::parse($classe->updated_at)->tz('America/Sao_Paulo')->format('d/m/Y H:i:s') }}</td>
                         <td><a href="{{ route('classe.show', ['classe' => $classe->id]) }}">Visualizar</a></td>
+                        <td><a href="{{ route('classe.edit', ['classe' => $classe->id]) }}">Editar</a></td>
+                        <td>
+                            <form action="{{ route('classe.destroy', ['classe' => $classe->id]) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" onclick=" return confirm('Are you sure you want to delete?')">Delete</button>
+                            </form>
+                        </td>
                     </tr>
                 </tbody>
             @empty
