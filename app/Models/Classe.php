@@ -11,7 +11,8 @@ class Classe extends Model
     protected $table = 'classes';
     protected $fillable = ['name', 'description', 'order_classe', 'course_id'];
 
-    public function course(){
-        return $this->belongsTo(Course::class, 'course_id');
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
     }
 }

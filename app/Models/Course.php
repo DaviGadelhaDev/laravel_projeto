@@ -11,7 +11,8 @@ class Course extends Model
     protected $table = 'courses';
     protected $fillable = ['name', 'price'];
 
-    public function classe(){
+    public function classe()
+    {
         return $this->hasMany(Classe::class);
     }
 }

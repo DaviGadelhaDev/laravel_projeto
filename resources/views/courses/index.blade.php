@@ -1,55 +1,56 @@
 @extends('master')
 @section('content')
-    @if (session('success'))
-        <span>{{ session('success') }}</span>
-    @endif
+<a href="{{ route('course.create') }}">
+    <button type="button" class="btn btn-success">Cadastrar</button>
+</a><br>
 
-    <h2>Listagem</h2>
-    @if (session('success'))
-    <p style="color: green;">
+<h2>Listar os Cursos</h2>
+
+@if (session('success'))
+    <p style="color: #082">
         {{ session('success') }}
     </p>
+@endif
 
-    @endif
-    @if (session('error'))
-    <p style="color: red;">
+@if (session('error'))
+    <p style="color: #f00">
         {{ session('error') }}
     </p>
-    @endif
+@endif
 
-    <a href="{{ route('course.create') }}">Cadastrar</a>
-    @forelse ($courses as $course)
-    <table>
-        <thead>
-            <tr>
-                <th>ID: </th>
-                <th>Name: </th>
-                <th>Price: </th>
-                <th>Created_at: </th>
-                <th>Updated_at: </th>
-            </tr>
-        </thead>
-                <tbody>
-                    <tr>
-                        <td>{{ $course->id }}</td>
-                        <td>{{ $course->name }}</td>
-                        <td>{{ 'R$'. number_format($course->price, 2, ',', '.' )}}</td>
-                        <td>{{ \Carbon\Carbon::parse($course->created_at)->tz('America/Sao_Paulo')->format('d/m/Y H:i:s') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($course->updated_at)->tz('America/Sao_Paulo')->format('d/m/Y H:i:s') }}</td>
-                        <td><a href="{{ route('course.show', ['course' => $course->id]) }}"><button type="button">Visualizar</button></a></td>
-                        <td><a href="{{ route('classe.index', ['course' => $course->id])}}"><button type="button">Aulas</button></a></td>
-                        <td><a href="{{ route('course.edit', ['course' => $course->id]) }}"><button type="button">Editar</button></a></td>
-                        <td>
-                            <form action="{{ route('course.destroy', $course->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" onclick="return confirm('Are you sure you want to delete?')">Excuir</button>
-                            </form></td>
-                    </tr>
-                </tbody>
-            @empty
-                <span style="color: red;">No courses found</span>
-            @endforelse
-    </table>
-    {{ $courses->links() }}
+@forelse ($courses as $course)
+    ID: {{ $course->id }}<br>
+    Nome: {{ $course->name }}<br>
+    Preço: {{ 'R$ ' . number_format($course->price, 2, ',', '.') }}<br>
+    Cadastrado: {{ \Carbon\Carbon::parse($course->created_at)->tz('America/Sao_Paulo')->format('d/m/Y H:i:s') }}<br>
+    Editado:
+    {{ \Carbon\Carbon::parse($course->updated_at)->tz('America/Sao_Paulo')->format('d/m/Y H:i:s') }}<br><br>
+
+    <a href="{{ route('classe.index', ['course' => $course->id]) }}">
+        <button type="button">Aulas</button>
+    </a><br><br>
+
+    <a href="{{ route('course.show', ['course' => $course->id]) }}">
+        <button type="button">Visualizar</button>
+    </a><br><br>
+
+    <a href="{{ route('course.edit', ['course' => $course->id]) }}">
+        <button type="button">Editar</button>
+    </a><br><br>
+
+    <form method="POST" action="{{ route('course.destroy', ['course' => $course->id]) }}">
+        @csrf
+        @method('delete')
+        <button type="submit"
+            onclick="return confirm('Tem certeza que deseja apagar este registro?')">Apagar</button>
+    </form>
+    
+    <hr>
+@empty
+    <p style="color: #f00;">Nenhum curso encontrado!</p>
+@endforelse
+
+{{ $courses->links() }}
 @endsection
+   
+

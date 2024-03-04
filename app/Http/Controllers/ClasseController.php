@@ -6,6 +6,8 @@ use App\Models\Classe;
 use App\Models\Course;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ClasseController extends Controller
 {
@@ -28,17 +30,31 @@ class ClasseController extends Controller
             'description' => 'required',
             'course_id' => 'required'
         ]);
-
-        //Recuperar a ultima ordem da aula no curso
-        $lastOrderClasse = Classe::where('course_id', $request->course_id)->orderBy('order_classe')->first();
-        Classe::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'order_classe' => $lastOrderClasse != null ? $lastOrderClasse->order_classe + 1 : 1, 
-            'course_id' => $request->course_id
-        ]);
-
-        return redirect()->route('classe.index', ['course' => $request->course_id])->with('success', 'Registered successfully');
+        try {
+            // Recuperar a última ordem da aula no curso
+            $lastOrderClasse = Classe::where('course_id', $request->course_id)->orderByDesc('order_classe')->first();
+            // Cadastrar no banco de dados na tabela aulas
+            $classe = Classe::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'order_classe' => $lastOrderClasse != null ? $lastOrderClasse->order_classe + 1 : 1,
+                /*'order_classe' => 'CCCCC',*/
+                'course_id' => $request->course_id,
+            ]);
+            // Salvar log
+            Log::info('Aula cadastrada.', ['id' => $classe->id, $classe]);
+            // Operação é concluída com êxito
+            DB::commit();
+            // Redirecionar o usuário, enviar a mensagem de sucesso
+            return redirect()->route('classe.index', ['course' => $request->course_id])->with('success', 'Aula cadastrada com sucesso!');
+        } catch (Exception $e) {
+            // Salvar log
+            Log::warning('Aula não cadastrada', ['name' => $request->name]);
+            // Operação não é concluída com êxito
+            DB::rollBack();
+            // Redirecionar o usuário, enviar a mensagem de sucesso
+            return redirect()->back()->with('error', 'Aula não cadastrada!');
+        }
     }
 
     public function show(Classe $classe)
@@ -48,40 +64,33 @@ class ClasseController extends Controller
 
     public function edit(Request $request, Classe $classe)
     {
-        $request->validate([
-            'name' => 'required',
-            'description' => 'required',
-            ''
-        ]);
-
         return view('classes.edit', ['classe' => $classe]);
     }
 
     
     public function update(Request $request, Classe $classe)
     {
-        $classe->update([
-            'name' => $request->name,
-            'description' => $request->description
-        ]);
+       // Editar as informações do registro no banco de dados
+       $classe->update([
+        'name' => $request->name,
+        'description' => $request->description,
+    ]);
 
-        return redirect()->route('classe.index', ['course' => $classe->course_id])->with('success', 'Classe edited successfully');
+    // Salvar log
+    Log::info('Aula editada.', ['id' => $classe->id]);
+
+    // Redirecionar o usuário, enviar a mensagem de sucesso
     }
 
 
     public function destroy(Classe $classe)
     {
-        try
-        {
-             //Excluir o usuário
-       $classe->delete();
-       //redirecionar o usuário
-       return redirect()->route('classe.index', ['course' => $classe->course_id])->with('sucess', 'Classe delete successfully');
-        }
-        catch(Exception $e)
-        {
-            return redirect()->route('course.index')->with('error', 'Error: Classe not delete');
-        }
+        // Excluir o registro do banco de dados
+        $classe->delete();
+
+        // Redirecionar o usuário, enviar a mensagem de sucesso
+        return redirect()->route('classe.index', ['course' => $classe->course_id])->with('success', 'Aula apagada com sucesso!');
+        
       
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Course;
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CourseController extends Controller
 {
@@ -34,8 +36,15 @@ class CourseController extends Controller
             'price' => 'required|numeric'
         ]);
 
-        Course::create($request->all());
-        return redirect()->route('course.index')->with('success', 'Registration completed successfully');
+       // Cadastrar no banco de dados na tabela cursos os valores de todos os campos
+       $course = Course::create($request->all());
+       //Course::create([ 'name' => $request->name]);
+
+       // Salvar log
+       Log::info('Curso cadastrado.', ['id' => $course->id, $course]);
+
+       // Redirecionar o usuário, enviar a mensagem de sucesso
+       return redirect()->route('course.show', ['course' => $course->id])->with('success', 'Curso cadastrado com sucesso!');
     }
 
     /**
@@ -59,8 +68,22 @@ class CourseController extends Controller
      */
     public function update(Request $request, Course $course)
     {
-        $course->update(['name'=>$request->name, 'price'=>$request->price]);
-        return redirect()->route('course.index')->with('success', 'Course edited successfully');
+        //Validação
+        $request->validate([
+            'name' => 'required',
+            'price' => 'required'
+        ]);
+         // Editar as informações do registro no banco de dados
+         $course->update([
+            'name' => $request->name,
+            'price' => $request->price
+        ]);
+
+        // Salvar log
+        Log::info('Curso editado.', ['id' => $course->id]);
+
+        // Redirecionar o usuário, enviar a mensagem de sucesso
+        return redirect()->route('course.show', ['course' => $request->course])->with('success', 'Curso editado com sucesso!');
     }
 
     /**
@@ -68,7 +91,15 @@ class CourseController extends Controller
      */
     public function destroy(Course $course)
     {
-        $course->delete();
-        return redirect()->route('course.index')->with('success', 'Course deleted successfully');
+        try {
+            // Excluir o registro do banco de dados
+            $course->delete();
+
+            // Redirecionar o usuário, enviar a mensagem de sucesso
+            return redirect()->route('course.index')->with('success', 'Curso excluído com sucesso!');
+        } catch (Exception $e) {
+            // Redirecionar o usuário, enviar a mensagem de erro
+            return redirect()->route('course.index')->with('error', 'Curso não excluído!');
+        }
     }
 }

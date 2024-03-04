@@ -1,47 +1,51 @@
 @extends('master')
 @section('content')
-    @if (session('success'))
-        <span>{{ session('success') }}</span>
-    @endif
-    <h2>Listagem - Aulas</h2>
-    @if (session('success'))
-        <p style="color: green;">
-            {{ session('success') }}
-        </p>
-    @endif
-    <a href="{{ route('classe.create', ['course' => $course->id]) }}">Cadastrar</a>
+<br>
+<a href="{{ route('course.index') }}">
+    <button type="button">Cursos</button>
+</a><br><br>
+
+<a href="{{ route('classe.create', ['course' => $course->id ]) }}">
+    <button type="button">Cadastrar</button>
+</a>
+
+<h2>Listar as Aulas</h2>
+
+@if (session('success'))
+    <p style="color: #082">
+        {{ session('success') }}
+    </p>
+@endif
+
+@forelse ($classes as $classe)
+    ID: {{ $classe->id }}<br>
+    Nome: {{ $classe->name }}<br>
+    Ordem: {{ $classe->order_classe }}<br>
+    Curso: {{ $classe->course->name }}<br>
+
+    Cadastrado: {{ \Carbon\Carbon::parse($classe->created_at)->tz('America/Sao_Paulo')->format('d/m/Y H:i:s') }}<br>
+    Editado:
+    {{ \Carbon\Carbon::parse($classe->updated_at)->tz('America/Sao_Paulo')->format('d/m/Y H:i:s') }}<br><br>
     
-    @forelse ($classes as $classe)
-    <table>
-        <thead>
-            <tr>
-                <th>ID: </th>
-                <th>Name: </th>
-                <th>Course: </th>
-                <th>Created_at: </th>
-                <th>Updated_at: </th>
-            </tr>
-        </thead>
-                <tbody>
-                    <tr>
-                        <td>{{ $classe->id }}</td>
-                        <td>{{ $classe->name }}</td>
-                        <td>{{ $classe->course->name }}</td>
-                        <td>{{ \Carbon\Carbon::parse($classe->created_at)->tz('America/Sao_Paulo')->format('d/m/Y H:i:s') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($classe->updated_at)->tz('America/Sao_Paulo')->format('d/m/Y H:i:s') }}</td>
-                        <td><a href="{{ route('classe.show', ['classe' => $classe->id]) }}">Visualizar</a></td>
-                        <td><a href="{{ route('classe.edit', ['classe' => $classe->id]) }}">Editar</a></td>
-                        <td>
-                            <form action="{{ route('classe.destroy', ['classe' => $classe->id]) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" onclick=" return confirm('Are you sure you want to delete?')">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            @empty
-                <span style="color: red;">No classes found</span>
-            @endforelse
-    </table>
+    <a href="{{ route('classe.show', ['classe' => $classe->id]) }}">
+        <button type="button">Visualizar</button>
+    </a><br><br>
+    
+    <a href="{{ route('classe.edit', ['classe' => $classe->id]) }}">
+        <button type="button">Editar</button>
+    </a><br><br>
+
+    <form method="POST" action="{{ route('classe.destroy', ['classe' => $classe->id])}}">
+        @csrf
+        @method('delete')
+        <button type="submit" onclick="return confirm('Tem certeza que deseja apagar este registro?')">Apagar</button>
+    </form>
+
+    <hr>
+@empty
+    <p style="color: #f00;">Nenhuma aula encontrada!</p>
+@endforelse
+
 @endsection
+   
+
