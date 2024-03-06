@@ -44,7 +44,7 @@ class CourseController extends Controller
        Log::info('Curso cadastrado.', ['id' => $course->id, $course]);
 
        // Redirecionar o usuário, enviar a mensagem de sucesso
-       return redirect()->route('course.show', ['course' => $course->id])->with('success', 'Curso cadastrado com sucesso!');
+       return redirect()->route('course.index', ['course' => $course->id])->with('success', 'Curso cadastrado com sucesso!');
     }
 
     /**

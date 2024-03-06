@@ -1,33 +1,59 @@
-@extends('master')
+@extends('layouts.master')
+
 @section('content')
-<a href="{{ route('course.index') }}">Listar</a><br>
+    <div class="container-fluid px-4">
+        <div class="mb-1 space-between-elements">
+            <h2 class="mt-3">Curso</h2>
+            <ol class="breadcrumb mb-3 mt-3">
+                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('course.index') }}">Cursos</a></li>
+                <li class="breadcrumb-item active">Curso</li>
+            </ol>
+        </div>
 
-<h2>Cadastrar Curso</h2>
+        <div class="card mb-4">
+            <div class="card-header space-between-elements">
+                <span>Cadastrar</span>
+                <span class="d-flex">
 
-@if ($errors->any())
-    <span style="color: #f00">
-        @foreach ($errors->all() as $error)
-            {{ $error }}<br>
-        @endforeach
-    </span>
-@endif
-<br>
+                    <a href="{{ route('course.index') }}" class="btn btn-secondary btn-sm me-1"><i class="fa-solid fa-arrow-left"></i>
+                        Voltar</a>
 
-<form action="{{ route('course.store') }}" method="POST">
-    @csrf
-    @method('POST')
+                </span>
+            </div>
+            <div class="card-body">
 
-    <label>Nome: </label>
-    <input type="text" name="name" id="name" placeholder="Nome do curso"
-        value="{{ old('name') }}"><br><br>
+                @if ($errors->any())
+                    <div class="alert alert-danger" role="alert">
+                        @foreach ($errors->all() as $error)
+                            {{ $error }}<br>
+                        @endforeach
+                    </div>
+                @endif
 
-    <label>Preço: </label>
-    <input type="text" name="price" id="price" placeholder="Usar '.' separar real do centavo"
-        value="{{ old('price') }}"><br><br>
+                <form action="{{ route('course.store') }}" method="POST" class="row g-3">
+                    @csrf
+                    @method('POST')
 
-    <button type="submit">Cadastrar</button>
+                    <div class="col-12">
+                        <label for="name" class="form-label">Nome: </label>
+                        <input type="text" name="name" id="name" class="form-control" placeholder="Nome do curso"
+                            value="{{ old('name') }}">
+                    </div>
 
-</form>
+                    <div class="col-12">
+                        <label for="price" class="form-label">Preço: </label>
+                        <input type="text" name="price" id="price" class="form-control"
+                            placeholder="Usar '.' separar real do centavo" value="{{ old('price') }}">
+                    </div>
+
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-success bt-sm">Cadastrar</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
 @endsection
-
-    

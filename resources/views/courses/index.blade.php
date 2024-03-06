@@ -1,56 +1,89 @@
-@extends('master')
+@extends('layouts.master')
+
 @section('content')
-<a href="{{ route('course.create') }}">
-    <button type="button" class="btn btn-success">Cadastrar</button>
-</a><br>
+    <div class="container-fluid px-4">
+        <div class="mb-1 space-between-elements">
+            <h2 class="mt-3">Curso</h2>
+            <ol class="breadcrumb mb-3 mt-3">
+                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                <li class="breadcrumb-item active">Cursos</li>
+            </ol>
+        </div>
 
-<h2>Listar os Cursos</h2>
+        <div class="card mb-4">
+            <div class="card-header space-between-elements">
+                <span>Listar</span>
+                <span>
+                    <a href="{{ route('course.create') }}" class="btn btn-success btn-sm"><i
+                            class="fa-regular fa-square-plus"></i> Cadastrar</a>
+                </span>
+            </div>
+            <div class="card-body">
 
-@if (session('success'))
-    <p style="color: #082">
-        {{ session('success') }}
-    </p>
-@endif
+                @if (session('success'))
+                    <div class="alert alert-success" role="alert">
+                        {{ session('success') }}
+                    </div>
+                @endif
 
-@if (session('error'))
-    <p style="color: #f00">
-        {{ session('error') }}
-    </p>
-@endif
+                @if (session('error'))
+                    <div class="alert alert-danger" role="alert">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
-@forelse ($courses as $course)
-    ID: {{ $course->id }}<br>
-    Nome: {{ $course->name }}<br>
-    Preço: {{ 'R$ ' . number_format($course->price, 2, ',', '.') }}<br>
-    Cadastrado: {{ \Carbon\Carbon::parse($course->created_at)->tz('America/Sao_Paulo')->format('d/m/Y H:i:s') }}<br>
-    Editado:
-    {{ \Carbon\Carbon::parse($course->updated_at)->tz('America/Sao_Paulo')->format('d/m/Y H:i:s') }}<br><br>
+                <table class="table table-striped table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th class="d-none d-md-table-cell">Preço</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-    <a href="{{ route('classe.index', ['course' => $course->id]) }}">
-        <button type="button">Aulas</button>
-    </a><br><br>
+                        @forelse ($courses as $course)
+                            <tr>
+                                <th>{{ $course->id }}</th>
+                                <td>{{ $course->name }}</td>
+                                <td class="d-none d-md-table-cell">{{ 'R$ ' . number_format($course->price, 2, ',', '.') }}</td>
+                                <td class="d-md-flex justify-content-center">
+                                    <a href="{{ route('classe.index', ['course' => $course->id]) }}"
+                                        class="btn btn-info btn-sm me-1 mb-1">
+                                        <i class="fa-solid fa-list"></i> Aulas
+                                    </a>
 
-    <a href="{{ route('course.show', ['course' => $course->id]) }}">
-        <button type="button">Visualizar</button>
-    </a><br><br>
+                                    <a href="{{ route('course.show', ['course' => $course->id]) }}"
+                                        class="btn btn-primary btn-sm me-1 mb-1">
+                                        <i class="fa-regular fa-eye"></i> Visualizar
+                                    </a>
 
-    <a href="{{ route('course.edit', ['course' => $course->id]) }}">
-        <button type="button">Editar</button>
-    </a><br><br>
+                                    <a href="{{ route('course.edit', ['course' => $course->id]) }}"
+                                        class="btn btn-warning btn-sm me-1 mb-1">
+                                        <i class="fa-solid fa-pen-to-square"></i> Editar
+                                    </a>
 
-    <form method="POST" action="{{ route('course.destroy', ['course' => $course->id]) }}">
-        @csrf
-        @method('delete')
-        <button type="submit"
-            onclick="return confirm('Tem certeza que deseja apagar este registro?')">Apagar</button>
-    </form>
-    
-    <hr>
-@empty
-    <p style="color: #f00;">Nenhum curso encontrado!</p>
-@endforelse
+                                    <form method="POST" action="{{ route('course.destroy', ['course' => $course->id]) }}">
+                                        @csrf
+                                        @method('delete')
+                                        <button type="submit" class="btn btn-danger btn-sm me-1 mb-1"
+                                            onclick="return confirm('Tem certeza que deseja apagar este registro?')"><i
+                                                class="fa-regular fa-trash-can"></i> Apagar</button>
+                                    </form>
 
-{{ $courses->links() }}
+                                </td>
+                            </tr>
+                        @empty
+                            <div class="alert alert-danger" role="alert">Nenhum curso encontrado!</div>
+                        @endforelse
+
+                    </tbody>
+                </table>
+
+                    {{ $courses->onEachSide(0)->links() }}
+
+            </div>
+        </div>
+    </div>
 @endsection
-   
-
