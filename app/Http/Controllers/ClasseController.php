@@ -15,12 +15,12 @@ class ClasseController extends Controller
     {
         //Usando os dados do course no relacionamento de 1 para muitos
         $classes = Classe::with('course')->where('course_id', $course->id)->orderBy('order_classe')->get();
-        return view('classes.index', ['classes' => $classes, 'course' => $course]);
+        return view('classes.index', ['menu' => 'courses', 'classes' => $classes, 'course' => $course]);
     }
     //Método create com relacionamento entre tabelas
     public function create(Course $course)
     {
-        return view('classes.create', ['course' => $course]);
+        return view('classes.create', ['menu' => 'courses', 'course' => $course]);
     }
 
     public function store(Request $request)
@@ -59,12 +59,12 @@ class ClasseController extends Controller
 
     public function show(Classe $classe)
     {
-        return view('classes.show', ['classe' => $classe]);
+        return view('classes.show', ['menu' => 'courses', 'classe' => $classe]);
     }
 
     public function edit(Request $request, Classe $classe)
     {
-        return view('classes.edit', ['classe' => $classe]);
+        return view('classes.edit', ['menu' => 'courses', 'classe' => $classe]);
     }
 
     

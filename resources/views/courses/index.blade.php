@@ -3,14 +3,14 @@
 @section('content')
     <div class="container-fluid px-4">
         <div class="mb-1 space-between-elements">
-            <h2 class="mt-3">Curso</h2>
+            <h2 class="ms-2 mt-3 me-3">Cursos</h2>
             <ol class="breadcrumb mb-3 mt-3">
                 <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
                 <li class="breadcrumb-item active">Cursos</li>
             </ol>
         </div>
 
-        <div class="card mb-4">
+        <div class="card  mb-4 border-light shadow">
             <div class="card-header space-between-elements">
                 <span>Listar</span>
                 <span>
@@ -32,7 +32,7 @@
                     </div>
                 @endif
 
-                <table class="table table-striped table-hover table-bordered">
+                <table class="table table-striped table-hover">
                     <thead>
                         <tr>
                             <th>ID</th>

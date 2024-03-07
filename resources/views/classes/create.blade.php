@@ -1,42 +1,68 @@
 @extends('layouts.master')
+
 @section('content')
-    <br>
-    <a href="{{ route('classe.index', ['course' => $course->id]) }}">
-        <button type="button">
-            Listar
-        </button>
-    </a><br>
+    <div class="container-fluid px-4">
+        <div class="mb-1 space-between-elements">
+            <h2 class="ms-2 mt-3 me-3">Aula</h2>
+            <ol class="breadcrumb mb-3 mt-3">
+                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('course.index') }}">Cursos</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('classe.index', ['course' => $course->id]) }}">Aulas</a>
+                </li>
+                <li class="breadcrumb-item active">Aula</li>
+            </ol>
+        </div>
 
-    <h2>Cadastrar Aula</h2>
+        <div class="card mb-4 border-light shadow">
+            <div class="card-header space-between-elements">
+                <span>Cadastrar</span>
+                <span class="d-flex">
 
-    @if (session('error'))
-        <p style="color: #f00">
-            {{ session('error') }}
-        </p>
-    @endif
+                    <a href="{{ route('classe.index', ['course' => $course->id]) }}" class="btn btn-info btn-sm me-1"><i
+                            class="fa-solid fa-list"></i> Listar</a>
 
-    @if ($errors->any())
-        <span style="color: #f00">
-            @foreach ($errors->all() as $error)
-                {{ $error }}<br>
-            @endforeach
-        </span>
-    @endif
-    <br>
+                </span>
+            </div>
+            <div class="card-body">
 
-    <form action="{{ route('classe.store') }}" method="POST">
-        @csrf
-        @method('POST')
+                @if (session('error'))
+                    <div class="alert alert-danger" role="alert">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
-        <input type="hidden" name="course_id" id="course_id" value="{{ $course->id }}">
+                @if ($errors->any())
+                    <div class="alert alert-danger" role="alert">
+                        @foreach ($errors->all() as $error)
+                            {{ $error }}<br>
+                        @endforeach
+                    </div>
+                @endif
 
-        <label>Nome: </label>
-        <input type="text" name="name" id="name" placeholder="Nome da aula" value="{{ old('name') }}"><br><br>
+                <form action="{{ route('classe.store') }}" method="POST" class="row g-3">
+                    @csrf
+                    @method('POST')
 
-        <label>Descrição: </label>
-        <textarea name="description" rows="4" cols="30" id="description">{{ old('description') }}</textarea><br><br>
+                    <input type="hidden" name="course_id" id="course_id" value="{{ $course->id }}">
 
-        <button type="submit">Cadastrar</button>
+                    <div class="col-12">
+                        <label for="name" class="form-label">Nome: </label>
+                        <input type="text" name="name" id="name" class="form-control" placeholder="Nome da aula"
+                            value="{{ old('name') }}">
+                    </div>
 
-    </form>
+                    <div class="col-12">
+                        <label for="description" class="form-label">Descrição: </label>
+                        <textarea name="description" rows="4" cols="30" id="description" class="form-control">{{ old('description') }}</textarea>
+                    </div>
+
+                    <div class="col-12">
+                        <button type="submit"class="btn btn-success btn-sm me-1">Cadastrar</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
 @endsection

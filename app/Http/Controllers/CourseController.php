@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use Exception;
+use GuzzleHttp\Promise\Create;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -15,7 +16,7 @@ class CourseController extends Controller
     public function index()
     {
         $courses = Course::orderByDesc('created_at')->paginate(10);
-        return view('courses.index', ['courses' => $courses]);
+        return view('courses.index', ['menu' => 'courses','courses' => $courses]);
     }
 
     /**
@@ -23,7 +24,7 @@ class CourseController extends Controller
      */
     public function create()
     {
-        return view('courses.create');
+        return view('courses.create', ['menu' => 'courses']);
     }
 
     /**
@@ -37,14 +38,18 @@ class CourseController extends Controller
         ]);
 
        // Cadastrar no banco de dados na tabela cursos os valores de todos os campos
-       $course = Course::create($request->all());
+       $course = Course::create([
+        'name' => $request->name,
+        //Subistituindo o ponto por vazio e depois a vurgula por ponto
+        'price' => str_replace(',', '.', str_replace('.', '', $request->price)),
+       ]);
        //Course::create([ 'name' => $request->name]);
 
        // Salvar log
        Log::info('Curso cadastrado.', ['id' => $course->id, $course]);
 
        // Redirecionar o usuário, enviar a mensagem de sucesso
-       return redirect()->route('course.index', ['course' => $course->id])->with('success', 'Curso cadastrado com sucesso!');
+       return redirect()->route('course.index', ['menu' => 'courses', 'course' => $course->id])->with('success', 'Curso cadastrado com sucesso!');
     }
 
     /**
@@ -52,7 +57,7 @@ class CourseController extends Controller
      */
     public function show(Course $course)
     {
-        return view('courses.show', ['course' => $course]);
+        return view('courses.show', ['menu' => 'courses', 'course' => $course]);
     }
 
     /**
@@ -60,7 +65,7 @@ class CourseController extends Controller
      */
     public function edit(Course $course)
     {
-        return view('courses.edit', ['course' => $course]);
+        return view('courses.edit', ['menu' => 'courses', 'course' => $course]);
     }
 
     /**
