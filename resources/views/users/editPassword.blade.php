@@ -5,7 +5,7 @@
         <div class="mb-1 space-between-elements">
             <h2 class="ms-2 mt-3 me-3">Usuário</h2>
             <ol class="breadcrumb mb-3 mt-3">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="#">Dashboard</a></li>
+                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('dashboard.index') }}">Dashboard</a></li>
                 <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('user.index') }}">Usuários</a></li>
                 <li class="breadcrumb-item active">Usuário</li>
             </ol>

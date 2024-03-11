@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\LoginUserRequest;
 use Exception;
+use Illuminate\Support\Facades\Password;
 
 class Logincontroller extends Controller
 {
@@ -60,6 +61,45 @@ class Logincontroller extends Controller
             return back()->withInput()->with('error', 'Usuário não cadastrado');
         }
     }
+
+    public function showForgotPassword()
+    {
+        return view('login.forgotPassword');
+    }
+
+    public function submitForgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ],
+        [
+            'email.required' => 'O campo E-mail é obrigatório',
+            'email.email' => 'Digite um E-mail válido'
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if(!$user){
+            Log::warning('Tentativa recuperar senhacom E-mail não cadastrado', ['email' => $request->email]);
+            return back()->withInput()->with('error', 'E-mail não cadastrado');
+        }
+
+        try{
+            //Salvar token recuperar senha e enviar e-mail
+            $status = Password::sendResetLink(
+                $request->only('email')
+            );
+
+            Log::info('Recuperar senha', ['status' => $status, 'email' => $request->email]);
+            return redirect()->route('login.index')->with('success', 'Enviado E-mail com as instruções para recuperar senha');
+        }
+        catch(Exception $e){
+            Log::warning("Erro ao recuperar senha", ['error' => $e->getMessage(), 'email' => $request->email]);
+            return back()->withInput()->with('error', 'Erro ao recuperar senha');
+        }
+
+
+    }   
 
     public function destroy()
     {

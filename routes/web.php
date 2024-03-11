@@ -5,6 +5,7 @@ use App\Http\Controllers\ClasseController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Logincontroller;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -24,6 +25,8 @@ Route::controller(Logincontroller::class)->group(function () {
     Route::post('/login', 'store')->name('login.store');
     Route::get('/login-create', 'create')->name('login.create');
     Route::post('/login-create-user', 'storeUser')->name('login.createUser');
+    Route::get('/forgot-password', 'showForgotPassword')->name('login.forgotPassword');
+    Route::post('/forgot-password', 'submitForgotPassword')->name('login.submitPassword');
 });
 
 
@@ -34,6 +37,14 @@ Route::group(['middleware' => 'auth'], function () {
     //Dashboard
     Route::get('/dashborad', [DashboardController::class, 'index'])->name('dashboard.index');
 
+    //Perfil
+    Route::controller(ProfileController::class)->group(function () {
+        Route::get('/show-profile', 'show')->name('profile.show');
+        Route::get('/edit-profile', 'edit')->name('profile.edit');
+        Route::put('/update-profile', 'update')->name('profile.update');
+        Route::get('/edit-profile-password', 'editPassword')->name('profile.edit-password');
+        Route::put('/update-profile-password', 'UpdatePassword')->name('profile.update-password');
+    });
     //Usuários
     Route::controller(UserController::class)->group(function () {
         Route::get('/index-user', 'index')->name('user.index');
