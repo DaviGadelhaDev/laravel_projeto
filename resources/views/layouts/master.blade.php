@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{{ asset('css/styles_sbAdmin.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/styles_admin.css') }}">
-    <title>Courses Project</title>
+    <title>Project</title>
 </head>
 
 <body class="sb-nav-fixed">
@@ -33,7 +33,7 @@
                     <li>
                         <hr class="dropdown-divider" />
                     </li>
-                    <li><a class="dropdown-item" href="#!"><i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    <li><a class="dropdown-item"  href="{{ route('login.destroy') }}"><i class="fa-solid fa-arrow-right-to-bracket"></i>
                             Sair</a></li>
                 </ul>
             </li>
@@ -44,22 +44,30 @@
             <nav class="sb-sidenav accordion sb-sidenav-five" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
-                        <a @class(['nav-link', 'active' => isset($menu) && $menu == 'dashboard']) class="nav-link" href="">
+                        <a @class(['nav-link', 'active' => isset($menu) && $menu == 'dashboard']) class="nav-link" href="{{ route('dashboard.index') }}">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Dashboard
+                        </a>
+                        <a @class(['nav-link', 'active' => isset($menu) && $menu == 'users']) class="nav-link" href="{{ route('user.index') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
+                            Usuários
                         </a>
                         <a @class(['nav-link', 'active' => isset($menu) && $menu == 'courses']) class="nav-link" href="{{ route('course.index') }}">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-user-graduate"></i></div>
                             Cursos
                         </a>
-                        <a  class="nav-link" href="#">
+                        <a  class="nav-link" href="{{ route('login.destroy') }}">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-arrow-right-to-bracket"></i></div>
                             Sair
                         </a>
                     </div>
                 </div>
                 <div class="sb-sidenav-footer">
-                    <div class="small">Logado: Davi</div>
+                    <div class="small">Logado: 
+                        @if (auth() -> check())
+                            {{ auth()->user()->name }}
+                        @endif
+                    </div>
                 </div>
             </nav>
         </div>

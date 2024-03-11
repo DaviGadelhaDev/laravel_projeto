@@ -4,10 +4,10 @@
     <div class="container-fluid px-4">
         <div class="mb-1 space-between-elements">
             <h2 class="ms-2 mt-3 me-3">Aula</h2>
-            <ol class="breadcrumb mb-3 mt-3">
-                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('course.index') }}">Cursos</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('classe.index', ['course' => $classe->course_id]) }}">Aulas</a>
+            <ol class="breadcrumb mb-3 mt-3 p-1 bg-light rounded">
+                <li class="breadcrumb-item"><a class="text-decoration-none" href="#">Dashboard</a></li>
+                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('course.index') }}">Cursos</a></li>
+                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('classe.index', ['course' => $classe->course_id]) }}">Aulas</a>
                 </li>
                 <li class="breadcrumb-item active">Aula</li>
             </ol>
@@ -32,17 +32,7 @@
                 </span>
             </div>
             <div class="card-body">
-                @if (session('success'))
-                    <div class="alert alert-success" role="alert">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                @if (session('error'))
-                    <div class="alert alert-danger" role="alert">
-                        {{ session('error') }}
-                    </div>
-                @endif
+                <x-alert/>
                 <dl class="row">
                     <dt class="col-sm-3">ID: </dt>
                     <dd class="col-sm-9">{{ $classe->id }}</dd>

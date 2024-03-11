@@ -2,109 +2,158 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CourseRequest;
 use App\Models\Course;
 use Exception;
-use GuzzleHttp\Promise\Create;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CourseController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    // Listar os cursos
     public function index()
     {
+
+        // Recuperar os registros do banco dados
         $courses = Course::orderByDesc('created_at')->paginate(10);
-        return view('courses.index', ['menu' => 'courses','courses' => $courses]);
+
+        // Salvar log
+        Log::info('Listar curso.');
+
+        // Carregar a VIEW
+        return view('courses.index', ['menu' => 'courses', 'courses' => $courses]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('courses.create', ['menu' => 'courses']);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'price' => 'required|numeric'
-        ]);
-
-       // Cadastrar no banco de dados na tabela cursos os valores de todos os campos
-       $course = Course::create([
-        'name' => $request->name,
-        //Subistituindo o ponto por vazio e depois a vurgula por ponto
-        'price' => str_replace(',', '.', str_replace('.', '', $request->price)),
-       ]);
-       //Course::create([ 'name' => $request->name]);
-
-       // Salvar log
-       Log::info('Curso cadastrado.', ['id' => $course->id, $course]);
-
-       // Redirecionar o usuário, enviar a mensagem de sucesso
-       return redirect()->route('course.index', ['menu' => 'courses', 'course' => $course->id])->with('success', 'Curso cadastrado com sucesso!');
-    }
-
-    /**
-     * Display the specified resource.
-     */
+    // Detalhes do curso
     public function show(Course $course)
     {
+
+        // Salvar log
+        Log::info('Visualizar curso.', ['id' => $course->id]);
+
+        // Carregar a VIEW
         return view('courses.show', ['menu' => 'courses', 'course' => $course]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    // Carregar o formulário cadastrar novo curso
+    public function create()
+    {
+
+        // Carregar a VIEW
+        return view('courses.create', ['menu' => 'courses']);
+    }
+
+    // Cadastrar no banco de dados o novo curso
+    public function store(CourseRequest $request)
+    {
+
+        // Validar o formulário
+        $request->validated();
+
+        // Marca o ponto inicial de uma transação
+        DB::beginTransaction();
+
+        try {
+
+            // Cadastrar no banco de dados na tabela cursos os valores de todos os campos
+            //$course = Course::create($request->all());
+            $course = Course::create([
+                'name' => $request->name,
+                'price' => str_replace(',', '.', str_replace('.', '', $request->price)),
+            ]);
+
+            // Salvar log
+            Log::info('Curso cadastrado.', ['id' => $course->id, $course]);
+
+            // Operação é concluída com êxito
+            DB::commit();
+
+            // Redirecionar o usuário, enviar a mensagem de sucesso
+            return redirect()->route('course.show', ['course' => $course->id])->with('success', 'Curso cadastrado com sucesso!');
+        } catch (Exception $e) {
+            // Salvar log
+            Log::warning('Curso não cadastrado.', ['error' => $e->getMessage()]);
+
+            // Operação não concluída com êxito
+            DB::rollBack();
+
+            // Redirecionar o usuário, enviar a mensagem de erro
+            return back()->withInput()->with('success', 'Curso não cadastrado!');
+        }
+    }
+
+    // Carregar o formulário editar curso
     public function edit(Course $course)
     {
+
+        // Salvar log
+        Log::info('Editar curso.', ['id' => $course->id]);
+
+        // Carregar a VIEW
         return view('courses.edit', ['menu' => 'courses', 'course' => $course]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Course $course)
+    // Editar no banco de dados o curso
+    public function update(CourseRequest $request, Course $course)
     {
-        //Validação
-        $request->validate([
-            'name' => 'required',
-            'price' => 'required'
-        ]);
-         // Editar as informações do registro no banco de dados
-         $course->update([
-            'name' => $request->name,
-            'price' => $request->price
-        ]);
 
-        // Salvar log
-        Log::info('Curso editado.', ['id' => $course->id]);
+        // Validar o formulário
+        $request->validated();
 
-        // Redirecionar o usuário, enviar a mensagem de sucesso
-        return redirect()->route('course.show', ['course' => $request->course])->with('success', 'Curso editado com sucesso!');
+        // Marca o ponto inicial de uma transação
+        DB::beginTransaction();
+
+        try {
+
+            // Editar as informações do registro no banco de dados
+            $course->update([
+                'name' => $request->name,
+                'price' => str_replace(',', '.', str_replace('.', '', $request->price)),
+            ]);
+
+            // Salvar log
+            Log::info('Curso editado.', ['id' => $course->id]);
+
+            // Operação é concluída com êxito
+            DB::commit();
+
+            // Redirecionar o usuário, enviar a mensagem de sucesso
+            return redirect()->route('course.show', ['course' => $request->course])->with('success', 'Curso editado com sucesso!');
+
+        } catch (Exception $e) {
+            // Salvar log
+            Log::warning('Curso não editado.', ['error' => $e->getMessage()]);
+
+            // Operação não concluída com êxito
+            DB::rollBack();
+
+            // Redirecionar o usuário, enviar a mensagem de erro
+            return back()->withInput()->with('success', 'Curso não editado!');
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Excluir o curso do banco de dados
     public function destroy(Course $course)
     {
         try {
             // Excluir o registro do banco de dados
             $course->delete();
 
+            // Salvar log
+            Log::info('Apagar curso.', ['id' => $course->id]);
+
             // Redirecionar o usuário, enviar a mensagem de sucesso
             return redirect()->route('course.index')->with('success', 'Curso excluído com sucesso!');
+
         } catch (Exception $e) {
+
+            // Salvar log
+            Log::info('Curso não apagado.', ['erro' => $e->getMessage()]);
+
             // Redirecionar o usuário, enviar a mensagem de erro
             return redirect()->route('course.index')->with('error', 'Curso não excluído!');
+
         }
     }
 }

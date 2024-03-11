@@ -4,10 +4,10 @@
     <div class="container-fluid px-4">
         <div class="mb-1 space-between-elements">
             <h2 class="ms-2 mt-3 me-3">Aula</h2>
-            <ol class="breadcrumb mb-3 mt-3">
-                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('course.index') }}">Cursos</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('classe.index', ['course' => $course->id]) }}">Aulas</a>
+            <ol class="breadcrumb mb-3 mt-3 p-1 bg-light rounded">
+                <li class="breadcrumb-item"><a class="text-decoration-none" href="#">Dashboard</a></li>
+                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('course.index') }}">Cursos</a></li>
+                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('classe.index', ['course' => $course->id]) }}">Aulas</a>
                 </li>
                 <li class="breadcrumb-item active">Aula</li>
             </ol>
@@ -24,21 +24,7 @@
                 </span>
             </div>
             <div class="card-body">
-
-                @if (session('error'))
-                    <div class="alert alert-danger" role="alert">
-                        {{ session('error') }}
-                    </div>
-                @endif
-
-                @if ($errors->any())
-                    <div class="alert alert-danger" role="alert">
-                        @foreach ($errors->all() as $error)
-                            {{ $error }}<br>
-                        @endforeach
-                    </div>
-                @endif
-
+                <x-alert/>
                 <form action="{{ route('classe.store') }}" method="POST" class="row g-3">
                     @csrf
                     @method('POST')

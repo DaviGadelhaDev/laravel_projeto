@@ -4,9 +4,9 @@
     <div class="container-fluid px-4">
         <div class="mb-1 space-between-elements">
             <h2 class="ms-2 mt-3 me-3">Aulas</h2>
-            <ol class="breadcrumb mb-3 mt-3">
-                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('course.index') }}">Cursos</a></li>
+            <ol class="breadcrumb mb-3 mt-3 p-1 bg-light rounded">
+                <li class="breadcrumb-item"><a class="text-decoration-none" href="#">Dashboard</a></li>
+                <li class="breadcrumb-item"><a  class="text-decoration-none" href="{{ route('course.index') }}">Cursos</a></li>
                 <li class="breadcrumb-item active">Aulas</li>
             </ol>
         </div>
@@ -25,13 +25,7 @@
                 </span>
             </div>
             <div class="card-body">
-
-                @if (session('success'))
-                    <div class="alert alert-success" role="alert">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
+                <x-alert/>
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
