@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\LoginUserRequest;
-use Exception;
 use Illuminate\Support\Facades\Password;
 
 class Logincontroller extends Controller
@@ -80,7 +81,7 @@ class Logincontroller extends Controller
         $user = User::where('email', $request->email)->first();
 
         if(!$user){
-            Log::warning('Tentativa recuperar senhacom E-mail não cadastrado', ['email' => $request->email]);
+            Log::warning('Tentativa recuperar senha com E-mail não cadastrado', ['email' => $request->email]);
             return back()->withInput()->with('error', 'E-mail não cadastrado');
         }
 
@@ -100,6 +101,58 @@ class Logincontroller extends Controller
 
 
     }   
+   
+    // Carregar o formulário atualizar senha
+    public function showResetPassword(Request $request)
+    {
+
+        // Carregar a VIEW
+        return view('login.resetPassword', ['token' => $request->token]);
+    }
+
+
+    public function submitResetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        try {
+
+            $status = Password::reset(
+
+                $request->only('email', 'password', 'password_confirmation', 'token'),
+
+                function (User $user, string $password) {
+                    $user->forceFill([
+                        'password' => Hash::make($password)
+                    ]);
+
+                    $user->save();
+                }
+            );
+
+            // Salvar log
+            if ($status === Password::PASSWORD_RESET) {
+                Log::info('Senha atualizada.', ['resposta' => $status, 'email' => $request->email]);
+            } else {
+                Log::info('Senha não atualizada.', ['resposta' => $status, 'email' => $request->email]);
+            }
+
+            // Redirecionar o usuário, enviar a mensagem de erro
+
+            return $status === Password::PASSWORD_RESET ? redirect()->route('login.index')->with('success', 'Senha atualizada com sucesso!') : /*back()->withInput()->with('error', __($status))*/ redirect()->route('login.index')->with('error', __($status));
+        } catch (Exception $e) {
+
+            // Salvar log
+            Log::warning('Erro atualizar senha.', ['error' => $e->getMessage(), 'email' => $request->email]);
+
+            // Redirecionar o usuário, enviar a mensagem de erro
+            return back()->withInput()->with('error', 'Erro: Tente mais tarde!');
+        }
+    }
 
     public function destroy()
     {

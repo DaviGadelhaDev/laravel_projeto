@@ -27,6 +27,9 @@ Route::controller(Logincontroller::class)->group(function () {
     Route::post('/login-create-user', 'storeUser')->name('login.createUser');
     Route::get('/forgot-password', 'showForgotPassword')->name('login.forgotPassword');
     Route::post('/forgot-password', 'submitForgotPassword')->name('login.submitPassword');
+    Route::get('/reset-password/{token}', 'showResetPassword')->name('reset-password.show');
+    Route::post('/reset-password','submitResetPassword')->name('reset-password.submit');
+    Route::post('/', 'index')->name('password.reset');
 });
 
 

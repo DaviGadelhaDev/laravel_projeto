@@ -13,7 +13,7 @@
 </head>
 
 <body class="bg-primary">
-    @yield('content');
+    @yield('content')
 </body>
 
 </html>
